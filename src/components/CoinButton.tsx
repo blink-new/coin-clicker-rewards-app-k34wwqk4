@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { Button } from './ui/button'
 import { Coins } from 'lucide-react'
-import { CoinAnimation } from '../types/game'
 
 interface CoinButtonProps {
   coinsPerClick: number
@@ -10,47 +9,14 @@ interface CoinButtonProps {
 }
 
 export function CoinButton({ coinsPerClick, onCoinClick, disabled }: CoinButtonProps) {
-  const [animations, setAnimations] = useState<CoinAnimation[]>([])
   const [isPressed, setIsPressed] = useState(false)
 
-  const handleClick = (e: React.MouseEvent) => {
+  const handleClick = () => {
     if (disabled) return
     
     // Button press animation
     setIsPressed(true)
     setTimeout(() => setIsPressed(false), 200)
-    
-    // Create coin animation
-    const rect = e.currentTarget.getBoundingClientRect()
-    const centerX = rect.left + rect.width / 2
-    const centerY = rect.top + rect.height / 2
-    
-    // Create multiple coin animations
-    const newAnimations: CoinAnimation[] = []
-    const numCoins = Math.min(5, Math.floor(coinsPerClick / 50) + 1)
-    
-    for (let i = 0; i < numCoins; i++) {
-      const angle = (i / numCoins) * Math.PI * 2
-      const radius = 30 + Math.random() * 20
-      const x = centerX + Math.cos(angle) * radius
-      const y = centerY + Math.sin(angle) * radius
-      
-      newAnimations.push({
-        id: `${Date.now()}-${i}`,
-        x,
-        y,
-        amount: Math.floor(coinsPerClick / numCoins)
-      })
-    }
-    
-    setAnimations(prev => [...prev, ...newAnimations])
-    
-    // Remove animations after they complete
-    setTimeout(() => {
-      setAnimations(prev => prev.filter(anim => 
-        !newAnimations.some(newAnim => newAnim.id === anim.id)
-      ))
-    }, 800)
     
     onCoinClick()
   }
@@ -77,21 +43,6 @@ export function CoinButton({ coinsPerClick, onCoinClick, disabled }: CoinButtonP
           <span className="text-sm">COINS</span>
         </div>
       </Button>
-      
-      {/* Floating coin animations */}
-      {animations.map((anim) => (
-        <div
-          key={anim.id}
-          className="coin-float coin-animation"
-          style={{
-            left: anim.x,
-            top: anim.y,
-            transform: 'translate(-50%, -50%)'
-          }}
-        >
-          +{anim.amount}
-        </div>
-      ))}
     </div>
   )
 }

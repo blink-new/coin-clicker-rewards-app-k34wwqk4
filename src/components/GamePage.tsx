@@ -3,9 +3,12 @@ import { UpgradePanel } from './UpgradePanel'
 import { Card, CardContent } from './ui/card'
 import { Coins, MousePointer } from 'lucide-react'
 import { useGameData } from '../hooks/useGameData'
+import { blink } from '../blink/client'
 
 export function GamePage() {
   const { userStats, upgrades, loading, user, updateCoins, purchaseUpgrade } = useGameData()
+  
+  console.log('🎮 GamePage render:', { userStats, upgrades, loading, user: user?.id })
 
   if (loading) {
     return (
@@ -26,8 +29,13 @@ export function GamePage() {
             <Coins className="text-yellow-400 mx-auto mb-4" size={64} />
             <h1 className="text-3xl font-bold text-yellow-400 mb-2">Welcome to Coin Clicker!</h1>
             <p className="text-slate-300 mb-6">Sign in to start earning coins and redeeming PayPal cash!</p>
+            <button
+              onClick={() => blink.auth.login()}
+              className="bg-yellow-600 hover:bg-yellow-700 text-slate-900 font-bold py-3 px-6 rounded-lg transition-colors"
+            >
+              Sign In to Play
+            </button>
           </div>
-          <p className="text-slate-400 text-sm">You'll be redirected to sign in automatically...</p>
         </div>
       </div>
     )

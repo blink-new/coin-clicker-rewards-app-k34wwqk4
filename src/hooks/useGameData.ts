@@ -12,14 +12,18 @@ export function useGameData() {
   const loadGameData = async (userId: string) => {
     try {
       setLoading(true)
+      console.log('🎮 Loading game data for user:', userId)
       
       // Load user stats
+      console.log('📊 Loading user stats...')
       let stats = await blink.db.user_stats.list<UserStats>({
         where: { user_id: userId },
         limit: 1
       })
+      console.log('📊 User stats loaded:', stats)
       
       if (stats.length === 0) {
+        console.log('📊 Creating initial stats...')
         // Create initial stats
         const newStats = await blink.db.user_stats.create<UserStats>({
           user_id: userId,
@@ -27,37 +31,45 @@ export function useGameData() {
           coins_per_click: 100,
           total_clicks: 0
         })
+        console.log('📊 Initial stats created:', newStats)
         stats = [newStats]
       }
       
       setUserStats(stats[0])
       
       // Load redemptions
+      console.log('💰 Loading redemptions...')
       const userRedemptions = await blink.db.redemptions.list<Redemption>({
         where: { user_id: userId },
         orderBy: { created_at: 'desc' }
       })
+      console.log('💰 Redemptions loaded:', userRedemptions)
       setRedemptions(userRedemptions)
       
       // Load upgrades
+      console.log('⬆️ Loading upgrades...')
       let userUpgrades = await blink.db.upgrades.list<Upgrade>({
         where: { user_id: userId },
         limit: 1
       })
+      console.log('⬆️ Upgrades loaded:', userUpgrades)
       
       if (userUpgrades.length === 0) {
+        console.log('⬆️ Creating initial upgrades...')
         const newUpgrade = await blink.db.upgrades.create<Upgrade>({
           user_id: userId,
           upgrade_level: 0,
           total_spent: 0
         })
+        console.log('⬆️ Initial upgrades created:', newUpgrade)
         userUpgrades = [newUpgrade]
       }
       
       setUpgrades(userUpgrades[0])
+      console.log('✅ Game data loaded successfully')
       
     } catch (error) {
-      console.error('Error loading game data:', error)
+      console.error('❌ Error loading game data:', error)
     } finally {
       setLoading(false)
     }
