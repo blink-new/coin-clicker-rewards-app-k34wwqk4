@@ -5,7 +5,7 @@ import { Coins, MousePointer } from 'lucide-react'
 import { useGameData } from '../hooks/useGameData'
 
 export function GamePage() {
-  const { userStats, upgrades, loading, updateCoins, purchaseUpgrade } = useGameData()
+  const { userStats, upgrades, loading, user, updateCoins, purchaseUpgrade } = useGameData()
 
   if (loading) {
     return (
@@ -18,11 +18,27 @@ export function GamePage() {
     )
   }
 
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="mb-6">
+            <Coins className="text-yellow-400 mx-auto mb-4" size={64} />
+            <h1 className="text-3xl font-bold text-yellow-400 mb-2">Welcome to Coin Clicker!</h1>
+            <p className="text-slate-300 mb-6">Sign in to start earning coins and redeeming PayPal cash!</p>
+          </div>
+          <p className="text-slate-400 text-sm">You'll be redirected to sign in automatically...</p>
+        </div>
+      </div>
+    )
+  }
+
   if (!userStats || !upgrades) {
     return (
       <div className="min-h-screen bg-slate-900 flex items-center justify-center">
         <div className="text-center">
-          <p className="text-slate-300">Unable to load game data</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-400 mx-auto mb-4"></div>
+          <p className="text-slate-300">Setting up your game...</p>
         </div>
       </div>
     )

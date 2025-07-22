@@ -14,14 +14,14 @@ export function useGameData() {
       setLoading(true)
       
       // Load user stats
-      let stats = await blink.db.userStats.list<UserStats>({
+      let stats = await blink.db.user_stats.list<UserStats>({
         where: { user_id: userId },
         limit: 1
       })
       
       if (stats.length === 0) {
         // Create initial stats
-        const newStats = await blink.db.userStats.create<UserStats>({
+        const newStats = await blink.db.user_stats.create<UserStats>({
           user_id: userId,
           coins: 0,
           coins_per_click: 100,
@@ -79,7 +79,7 @@ export function useGameData() {
     if (!userStats || !user) return
     
     try {
-      const updatedStats = await blink.db.userStats.update<UserStats>(userStats.id, {
+      const updatedStats = await blink.db.user_stats.update<UserStats>(userStats.id, {
         coins: newCoins,
         total_clicks: userStats.total_clicks + clicksToAdd
       })
@@ -102,7 +102,7 @@ export function useGameData() {
       const newCoins = userStats.coins - upgradeCost
       const newCoinsPerClick = userStats.coins_per_click + upgradeBonus
       
-      await blink.db.userStats.update<UserStats>(userStats.id, {
+      await blink.db.user_stats.update<UserStats>(userStats.id, {
         coins: newCoins,
         coins_per_click: newCoinsPerClick
       })
@@ -149,7 +149,7 @@ export function useGameData() {
       
       // Update user coins
       const newCoins = userStats.coins - coinsToSpend
-      await blink.db.userStats.update<UserStats>(userStats.id, {
+      await blink.db.user_stats.update<UserStats>(userStats.id, {
         coins: newCoins
       })
       
